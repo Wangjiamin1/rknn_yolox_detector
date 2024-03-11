@@ -1,0 +1,38 @@
+# CMakeLists.txt
+
+# CMake最低版本要求
+cmake_minimum_required(VERSION 3.4.1)
+
+# 项目名称
+project(rknn_yolox_demo)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 寻找OpenCV库
+find_package(OpenCV REQUIRED)
+
+# 包含rga头文件
+include_directories(/usr/include/rga)
+
+# 包含项目的头文件
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+# 添加要编译为共享库的源文件
+add_library(idetectorv2 SHARED
+        src/postprocess.cc
+        src/model_inference.cpp
+        src/idetector.cpp
+)
+
+# 链接所需的库
+target_link_libraries(idetectorv2
+  rknn_api
+  ${OpenCV_LIBS}
+  pthread
+)
+
+# 安装规则
+install(TARGETS idetectorv2
+        LIBRARY DESTINATION /usr/lib)
